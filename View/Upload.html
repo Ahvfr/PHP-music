@@ -1,0 +1,311 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>上传歌曲</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <link href="../static/css/admin1.css" type="text/css" rel="stylesheet" media="all">
+    <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+    th { background-color: #007bff; color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    tr:hover { background-color: #ddd; }
+    .user-info-header { font-size: 24px; margin: 20px 0; text-align: center; }
+    .actions a { color: #007bff; text-decoration: none; margin-right: 10px; }
+    .actions a:hover { text-decoration: underline; }
+
+    a{
+        text-decoration:none;
+        color:#000000;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        border-radius: 10px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal input, .modal select {
+
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+
+
+    .modal button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .modal button:hover {
+        background-color: #0056b3;
+    }
+    .modal-content1 {
+        background-color: #fefefe;
+        margin:  auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        border-radius: 10px;
+    }
+
+    .close_1 {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close_1:hover,
+    .close_1:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+
+    .modal_1 input, .modal_1 select {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+
+    .modal_1 button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .modal_1 button:hover {
+        background-color: #0056b3;
+    }
+
+    </style>
+</head>
+<body>
+
+
+
+<div id="daohang">
+    <br><br>
+    <div>
+        <a href="./?a=Upload"><b>审核反馈</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=Upload&type=1"><b>上传歌曲</b></a>
+    </div>
+</div>
+<?php
+    if($_GET['type']){
+        echo '<div id="addModal" class="modal_1">
+<div class="modal-content1">
+    <span class="close_1"></span>
+    <h2>上传歌曲</h2>
+    <form id="addForm" action="./?a=UploadChuli" method="post" enctype="multipart/form-data">
+
+        <label >歌名</label>
+        <input type="text" id="add_name" name="songname" required >
+
+        <label >作者</label>
+        <input type="text" id="add_author" name="author" required>
+
+        <label >歌词</label>
+        <textarea cols="105" rows="6" id="add_lyric" name="lyric"></textarea><br>
+
+        <label>音频</label>
+        <input type="file" id="add_audio" name="audio" required>
+        <p>
+            类型：
+            <input type="checkbox" value="1" name="rgb">热歌
+            <input type="checkbox" value="1" name="ndb">内地
+            <input type="checkbox" value="1" name="rhb">日韩
+        </p>
+        <input type="hidden" name="uid" value="'.$userInfo->id.'">
+        <button type="submit">保存修改</button>
+    </form>
+</div>
+</div>';
+    }
+    else{
+    echo '<div id="neirong">
+    <div class="neirongkuang">
+        <center>
+            <h2 class="user-info-header">审核反馈</h2><div style="float:right;"><a href="./">首页</a></div><br>
+            <table>
+                <thead>
+                <tr>
+                    <th>歌名</th>
+                    <th>作者</th>
+                    <th>时间</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+                <tbody>';
+                $arr=array(0=>"未审核",1=>"已通过",2=>"未通过");
+                $arr1=array(1=>"内容违规",2=>"歌曲重复");
+                foreach($musicuserInfo as $i => $result){
+                for($k=0;$k<count($result);$k++){
+
+                echo "  <tr>
+
+                    <td>".$result[$k][1]."</td>
+                    <td>".$result[$k][2]."</td>
+                    <td>".$result[$k][15]."</td>
+                    <td>";
+                        if($i==2)
+                        {
+                        echo $arr[$i]."(".$arr1[$result[$k][16]].")"."——"."<a class='music-btn' data-id='".$result[$k][0]."' data-name='".$result[$k][1]."' data-author='".$result[$k][2]."' data-lyric='".str_replace("<br>","\t\n",$result[$k][5])."' data-audiopath='".$result[$k][6]."' data-rgb='".$result[$k][9].
+                        "' data-ndb='".$result[$k][10]."' data-rhb='".$result[$k][11]."'>重新上传</a>";
+                        }else{
+                        echo $arr[$i];}
+                        echo "</td>
+                </tr>";
+
+                    }
+                }
+
+echo '
+                </tbody>
+            </table>
+        </center>
+    </div>
+</div>';
+
+}?>
+
+<!-- 编辑 -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>查看</h2>
+        <form name="form_1" id="form_1" action="./?a=ReUp"  method="post" enctype="multipart/form-data">
+            <label >歌名</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label>作者</label>
+            <input type="text" id="author" name="author" required>
+            <br>
+            <label >歌词</label>
+            <textarea cols="105" rows="6" id="lyric" name="lyric"></textarea><br>
+
+            <label>音频(若不更换音频则忽略)</label>
+            <input type="file" id="audio" name="audio" >
+
+            <p>
+                类型：
+                <input type="checkbox" value="1" id="rgb" name="rgb">热歌
+                <input type="checkbox" value="1" id="ndb" name="ndb">内地
+                <input type="checkbox" value="1" id="rhb" name="rhb">日韩
+            </p>
+            <input type="submit" name="submit" value="保存"></form>
+
+
+
+    </div>
+</div>
+
+<script>
+    // 获取模态框
+    var modal = document.getElementById("editModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span = document.getElementsByClassName("close")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.music-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+
+            document.getElementById('form_1').action ='./?a=ReUp&id='+this.getAttribute('data-id');
+
+
+            var name = this.getAttribute('data-name');
+            var author = this.getAttribute('data-author');
+            var lyric = this.getAttribute('data-lyric');
+            var rgb = this.getAttribute('data-rgb')
+            var ndb = this.getAttribute('data-ndb')
+            var rhb = this.getAttribute('data-rhb')
+            if(rgb == 1) {
+                document.getElementById('rgb').checked = 'checked';
+            }
+            if(ndb == 1) {
+                document.getElementById('ndb').checked = 'checked';
+            }
+            if(rhb == 1) {
+                document.getElementById('rhb').checked = 'checked';
+            }
+
+            document.getElementById('name').value = name;
+            document.getElementById('author').value = author;
+            document.getElementById('lyric').value = lyric;
+            //document.getElementById('rgb').src = rgb;
+            //document.getElementById('ndb').src = ndb;
+            //document.getElementById('rhb').src = rhb;
+
+
+            modal.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span.onclick = function() {
+        modal.style.display = "none";
+
+    }
+    // 点击模态框外部区域关闭模态框
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+
+        }
+
+    }
+
+
+    </script>
+
+</body>
+</html>

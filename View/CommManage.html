@@ -1,0 +1,273 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>评论管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+
+    <style>
+        a{
+            text-decoration:none;
+            color:#000000;
+        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #ddd; }
+        .user-info-header { font-size: 24px; margin: 20px 0; text-align: center; }
+        .actions a { color: #007bff; text-decoration: none; margin-right: 10px; }
+        .actions a:hover { text-decoration: underline; }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal input, .modal select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+
+
+        .modal button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal_1 button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+        .modal_1 button:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div id="banner_top">
+    <div id="banner_top_l">
+    </div>
+    <div id="banner_top_r">
+
+    </div>
+</div>
+
+
+
+<div id="neirong">
+    <div class="neirongkuang">
+        <center>
+            <h2 class="user-info-header">未通过</h2><div style="float:right;"><a href="./?a=Profile">返回</a></div><br>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>内容</th>
+                    <th>所属歌单</th>
+                    <th>时间</th>
+                    <th>原因</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                for($i=0;$i < count($result[1]);$i++){
+
+                echo "  <tr>
+
+                <td>".$result[1][$i][2]."</td>
+                <td>".$result2[$i]."</td>
+                <td>".date('Y-m-d h:i',$result[1][$i][3])."</td>
+                <td>"."内容违规"."</td>
+                <td class='actions'>
+                    <a  class='music-btn' data-id='".$result[1][$i][0]."' data-username='".$result[1][$i][1]."' data-gedan='".$result2[$i]."' >重新评论</a>
+
+                </td>
+                </tr>";
+
+
+                }
+                ?>
+
+                </tbody>
+            </table>
+
+            <h2 class="user-info-header">已通过</h2>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>内容</th>
+                    <th>所属歌单</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                for($i=0;$i < count($result[0]);$i++){
+
+                echo "  <tr>
+
+                <td>".$result[0][$i][2]."</td>
+                <td>".$result1[$i]."</td>
+                <td>".date('Y-m-d h:i',$result[0][$i][3])."</td>
+                <td class='act1ions'>
+                    <a  href='./?a=CommDel&id=".$result[0][$i][0]."' >删除</a>
+
+                </td>
+                </tr>";
+
+
+                }
+                ?>
+
+                </tbody>
+            </table>
+
+            <h2 class="user-info-header">未审核</h2>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>内容</th>
+                    <th>所属歌单</th>
+                    <th>时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                for($i=0;$i < count($result[2]);$i++){
+
+                echo "  <tr>
+
+                <td>".$result[2][$i][2]."</td>
+                <td>".$result3[$i]."</td>
+                <td>".date('Y-m-d h:i',$result[2][$i][3])."</td>
+                </tr>";
+
+
+                }
+                ?>
+
+                </tbody>
+            </table>
+
+        </center>
+    </div>
+</div>
+
+<!-- 编辑 -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>查看</h2>
+        <form name="form_1" id="form_1" action=""  method="post" >
+            <label >内容</label>
+            <input type="text" id="content" name="message">
+
+            <input type="submit" name="submit" value="保存"></form>
+
+
+
+    </div>
+</div>
+
+
+
+
+
+<script>
+    // 获取模态框
+    var modal = document.getElementById("editModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span = document.getElementsByClassName("close")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.music-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+
+            document.getElementById('form_1').action ='./?a=AddMessage&type=re&id='+this.getAttribute('data-id')+'&gedan='+this.getAttribute('data-gedan');
+
+
+            modal.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span.onclick = function() {
+        modal.style.display = "none";
+
+
+
+    }
+    // 点击模态框外部区域关闭模态框
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+
+
+        }
+    }
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>歌单管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+
+    <style>
+        a{
+            text-decoration:none;
+            color:#000000;
+        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #ddd; }
+        .user-info-header { font-size: 24px; margin: 20px 0; text-align: center; }
+        .actions a { color: #007bff; text-decoration: none; margin-right: 10px; }
+        .actions a:hover { text-decoration: underline; }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal input, .modal select {
+
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+
+
+        .modal button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal_1 button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+        .modal_1 button:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div id="banner_top">
+    <div id="banner_top_l">
+    </div>
+    <div id="banner_top_r">
+
+    </div>
+</div>
+
+
+
+<div id="neirong">
+    <div class="neirongkuang">
+        <center>
+            <h2 class="user-info-header">歌单列表</h2><div style="float:right;"><a href="./?a=Profile">返回</a></div><br>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>歌单名</th>
+                    <th>简介</th>
+                    <th>播放量</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                for($i=0;$i < count($result[0]);$i++){
+
+                echo "  <tr>
+
+                <td>".$result[0][$i][1]."</td>
+                <td>".$result[0][$i][2]."</td>
+                <td>".$result[0][$i][3]."</td>
+                <td>".$result[0][$i][4]."</td>
+                <td class='actions'>
+                    <a  class='music-btn' data-id='".$result[0][$i][0]."' data-name='".$result[0][$i][1]."' data-intro='".$result[0][$i][2]."' data-songs='";
+                    for($p=0;$p<count($result[2][$result[0][$i][0]]);$p++){
+                        echo $result[2][$result[0][$i][0]][$p][0]."|";
+                        }
+                        echo "'>编辑</a>
+                    <a href='./?a=GedanManage&type=del&id=".$result[0][$i][0]."'>删除</a>
+                </td>
+                </tr>";
+
+
+                }
+                ?>
+
+                </tbody>
+            </table>
+        </center>
+    </div>
+</div>
+
+<!-- 编辑 -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>查看</h2>
+        <form name="form_1" id="form_1" action=""  method="post" enctype="multipart/form-data">
+        <label >歌单名</label>
+        <input type="text" id="name" name="name">
+<br>
+        <label>简介</label>
+        <input type="text" id="author" name="author">
+<br>
+            <h4>歌曲列表</h4>
+            <input type="text" id="song-search" placeholder="Search songs">
+            <ul id="song-list">
+        <?php
+            foreach($result[1] as $key => $value){
+        echo '<li style="display:none"><input type="checkbox" id="'.$value[1].'" name="songs[]" value="'.$value[0].'">
+        <label for="'.$value[1].'">'.$value[1].'</label></li>';
+        }
+
+        ?>
+            </ul>
+        <input type="submit" name="submit" value="保存"></form>
+
+
+
+    </div>
+</div>
+
+
+
+
+
+<script>
+    // 获取模态框
+    var modal = document.getElementById("editModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span = document.getElementsByClassName("close")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.music-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+
+            document.getElementById('form_1').action ='./?a=GedanManage&type=ac&id='+this.getAttribute('data-id');
+
+
+            var name = this.getAttribute('data-name');
+            document.getElementById('name').value = name;
+
+            var intro = this.getAttribute('data-intro');
+            document.getElementById('author').value = intro;
+
+            var songs = this.getAttribute('data-songs').split('|');
+            var r = songs.filter(function (s) {
+                return s && s.trim();
+            });
+            for(i=0;i<r.length;i++){
+                document.getElementById(r[i]).checked="checked";
+                var a = document.getElementById(r[i]).parentNode;
+                a.style.display = "";
+            }
+
+
+
+            modal.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span.onclick = function() {
+        modal.style.display = "none";
+
+        var objNameList=document.getElementsByName('songs[]');
+        for(i=0;i<objNameList.length;i++) {
+            objNameList[i].checked ="";
+            var a = objNameList[i].parentNode;
+            a.style.display = "none";
+        }
+
+    }
+    // 点击模态框外部区域关闭模态框
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+
+            var objNameList=document.getElementsByName('songs[]');
+            for(i=0;i<objNameList.length;i++) {
+                objNameList[i].checked ="";
+                var a = objNameList[i].parentNode;
+                a.style.display = "none";
+            }
+
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('song-search');
+        const songList = document.getElementById('song-list');
+        // 搜索功能
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const songs = songList.querySelectorAll('li');
+
+            songs.forEach(song => {
+                const songName = song.querySelector('input').getAttribute('id');
+
+                if(searchTerm !== ''){
+                    if(songName.includes(searchTerm)){
+
+                        song.style.display = '';
+                    }
+                }
+
+            });
+        });
+    });
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

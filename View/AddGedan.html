@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建歌单</title>
+    <style>
+
+        a{
+            text-decoration:none;
+            color:#000000;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .song-list {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .song-item {
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>创建歌单</h1>
+
+<div class="song-list">
+
+    <form id="playlistForm" action="?a=AddGedan&action=1" method="POST" enctype="multipart/form-data">
+        <p><span>歌单名称：</span><input type="text"  name="gedanname" required></p>
+        <p><span>歌单简介：</span><input type="text"  name="intro" required></p>
+        <p><span>歌单封面：</span><input type="file" id="file" name="upload_image"></p>
+
+        <h4>歌曲列表</h4>
+        <input type="text" id="song-search" placeholder="Search songs">
+        <ul id="song-list">
+        <?php
+        foreach($result as $i => $res){
+        echo '
+        <li style="display:none">
+            <input type="checkbox" id="'.$res[1].'" name="songs[]" value="'.$res[0].'">
+            <label for="'.$res[1].'">'.$res[1].'</label>
+        </li>';}
+        ?>
+            </ul>
+
+        <input type="submit" name="submit" value="提交"><a style="float:right;" href="./?a=Profile">返回</a>
+    </form>
+
+    <div id="result" style="margin-top: 20px;"></div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('song-search');
+        const songList = document.getElementById('song-list');
+        // 搜索功能
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const songs = songList.querySelectorAll('li');
+
+            songs.forEach(song => {
+                const songName = song.querySelector('input').getAttribute('id');
+
+                if(searchTerm !== ''){
+                    if(songName.includes(searchTerm)){
+
+                        song.style.display = '';
+                    }
+                }
+
+            });
+        });
+    });
+    </script>
+
+</body>
+</html>
