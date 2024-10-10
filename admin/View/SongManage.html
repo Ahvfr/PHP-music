@@ -1,0 +1,353 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>后台 - 歌曲管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <link href="static/css/admin1.css" type="text/css" rel="stylesheet" media="all">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #ddd; }
+        .user-info-header { font-size: 24px; margin: 20px 0; text-align: center; }
+        .actions a { color: #007bff; text-decoration: none; margin-right: 10px; }
+        .actions a:hover { text-decoration: underline; }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal_1 {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+        .modal-content1 {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close_1 {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .close_1:hover,
+        .close_1:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal input, .modal select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal_1 input, .modal_1 select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal_1 button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+        .modal_1 button:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div id="banner_top">
+    <div id="banner_top_l">
+    </div>
+    <div id="banner_top_r">
+        <a class="top_a" href="./?a=logoff">退出</a>
+    </div>
+</div>
+
+<div id="daohang">
+    <br><br>
+    <div>
+        <a href="./"><b>首页</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=SongManage"><b>歌曲管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=GedanManage"><b>歌单管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=CommManage"><b>评论管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=SongAudit"><b>歌曲审核</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=UserManage"><b>用户管理</b></a>
+    </div>
+</div>
+
+<div id="neirong">
+    <div class="neirongkuang">
+        <center>
+            <h2 class="user-info-header">歌曲管理</h2><div style="float:right;"><a class='add-btn'>添加歌曲</a></div><br>
+            <?php if(!$result){echo "暂无";die();}?>
+            <table>
+                <thead>
+                <tr>
+                    <th>歌名</th>
+                    <th>作者</th>
+                    <th>歌词</th>
+                    <th>时长</th>
+                    <th>播放量</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                for($i=0;$i < count($result);$i++){
+
+                echo "  <tr>
+
+                <td>".$result[$i][1]."</td>
+                <td>".$result[$i][2]."</td>
+                <td>".substr($result[$i][5],0,20)."</td>
+                <td>".$result[$i][4]."</td>
+                <td>".$result[$i][8]."</td>
+                <td>".$result[$i][15]."</td>
+                <td class='actions'>
+                    <a  class='music-btn' data-name='".$result[$i][1]."' data-author='".$result[$i][2]."' data-lyric='".str_replace("<br>","\t\n",$result[$i][5])."' data-audiopath='".$result[$i][6]."' data-rgb='".$result[$i][9].
+                        "' data-ndb='".$result[$i][10]."' data-rhb='".$result[$i][11]."'>查看</a>
+                    <a href='./?a=SongDel&id=".$result[$i][0]."'>删除</a>
+                </td>
+                </tr>";
+
+
+                }
+                ?>
+
+                </tbody>
+            </table>
+        </center>
+    </div>
+</div>
+
+<!-- 编辑 -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>查看</h2>
+
+        <label >歌名</label>
+        <input type="text" id="name" readonly ="readonly">
+
+        <label>作者</label>
+        <input type="text" id="author" readonly ="readonly">
+
+        <label>歌词</label><br>
+        <textarea cols="105" rows="6" id="lyric" readonly ="readonly"></textarea><br>
+
+        <audio controls id="audio">
+            <source id="audiopath" src="" >
+        </audio>
+
+        <h4>类型：</h4><div id="song-types">
+        <p id="type1" style="display: none;">热歌</p>
+        <p id="type2" style="display: none;">内地</p>
+        <p id="type3" style="display: none;">日韩</p>
+    </div>
+
+
+    </div>
+</div>
+
+<!-- 添加 -->
+<div id="addModal" class="modal_1">
+    <div class="modal-content1">
+        <span class="close_1">&times;</span>
+        <h2>添加</h2>
+        <form id="addForm" action="./?a=SongAdd" method="post" enctype="multipart/form-data">
+
+            <label for="name">歌名</label>
+            <input type="text" id="add_name" name="songname" required >
+
+            <label for="author">作者</label>
+            <input type="text" id="add_author" name="author" required>
+
+            <label for="lyric">歌词</label>
+            <textarea cols="105" rows="6" id="add_lyric" name="lyric"></textarea><br>
+
+            <label for="audio">音频</label>
+            <input type="file" id="add_audio" name="audio"  required>
+            <p>
+                类型：
+                <input type="checkbox" value="1" name="rgb">热歌
+                <input type="checkbox" value="1" name="ndb">内地
+                <input type="checkbox" value="1" name="rhb">日韩
+            </p>
+            <button type="submit">保存修改</button>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    // 获取模态框
+    var modal = document.getElementById("editModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span = document.getElementsByClassName("close")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.music-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var name = this.getAttribute('data-name');
+            var author = this.getAttribute('data-author');
+            var lyric = this.getAttribute('data-lyric');
+            var audiopath = this.getAttribute('data-audiopath');
+            var rgb = this.getAttribute('data-rgb')
+            var ndb = this.getAttribute('data-ndb')
+            var rhb = this.getAttribute('data-rhb')
+            if(rgb == 1) {
+                document.getElementById('type1').style.display = 'block';
+            }
+            if(ndb == 1) {
+                document.getElementById('type2').style.display = 'block';
+            }
+            if(rhb == 1) {
+                document.getElementById('type3').style.display = 'block';
+            }
+
+            document.getElementById('name').value = name;
+            document.getElementById('author').value = author;
+            document.getElementById('lyric').value = lyric;
+            document.getElementById('audiopath').src =audiopath;
+            document.getElementById("audio").load();
+            //document.getElementById('rgb').src = rgb;
+            //document.getElementById('ndb').src = ndb;
+            //document.getElementById('rhb').src = rhb;
+
+
+            modal.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span.onclick = function() {
+        modal.style.display = "none";
+        document.getElementById('type1').style.display = 'none';
+        document.getElementById('type2').style.display = 'none';
+        document.getElementById('type3').style.display = 'none';
+    }
+    // 点击模态框外部区域关闭模态框
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            document.getElementById('type1').style.display = 'none';
+            document.getElementById('type2').style.display = 'none';
+            document.getElementById('type3').style.display = 'none';
+        }
+        if (event.target == modal_1) {
+            modal_1.style.display = "none";
+        }
+    }
+
+
+
+    // 获取模态框
+    var modal_1 = document.getElementById("addModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span_1 = document.getElementsByClassName("close_1")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.add-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            modal_1.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span_1.onclick = function() {
+        modal_1.style.display = "none";
+    }
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

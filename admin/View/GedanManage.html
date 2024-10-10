@@ -1,0 +1,435 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>后台 - 歌单管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <link href="static/css/admin1.css" type="text/css" rel="stylesheet" media="all">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #ddd; }
+        .user-info-header { font-size: 24px; margin: 20px 0; text-align: center; }
+        .actions a { color: #007bff; text-decoration: none; margin-right: 10px; }
+        .actions a:hover { text-decoration: underline; }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal_1 {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+        .modal-content1 {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close_1 {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .close_1:hover,
+        .close_1:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal input, .modal select {
+
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal_1 input, .modal_1 select {
+
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal_1 button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+        .modal_1 button:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div id="banner_top">
+    <div id="banner_top_l">
+    </div>
+    <div id="banner_top_r">
+        <a class="top_a" href="./?a=logoff">退出</a>
+    </div>
+</div>
+
+<div id="daohang">
+    <br><br>
+    <div>
+        <a href="./"><b>首页</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=SongManage"><b>歌曲管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=GedanManage"><b>歌单管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=CommManage"><b>评论管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=SongAudit"><b>歌曲审核</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=UserManage"><b>用户管理</b></a>
+    </div>
+</div>
+
+<div id="neirong">
+    <div class="neirongkuang">
+        <center>
+            <h2 class="user-info-header">歌单管理</h2><div style="float:right;"><a class='add-btn'>添加</a></div><br>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>歌单名</th>
+                    <th>作者</th>
+                    <th>简介</th>
+                    <th>类型</th>
+                    <th>点击量</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $arr = array(0=>"用户歌单",1=>"官方歌单");
+                for($i=0;$i < count($result[0]);$i++){
+                echo "  <tr>
+
+                <td>".$result[0][$i][1]."</td>
+                <td>".$result[0][$i][2]."</td>
+                <td>".$result[0][$i][4]."</td>
+                <td>".$arr[$result[0][$i][5]]."</td>
+                <td>".$result[0][$i][6]."</td>
+                    <td>".$result[0][$i][7]."</td>
+                <td class='actions'>
+                    <a  class='music-btn' data-id='".$result[0][$i][0]."' data-name='".$result[0][$i][1]."' data-author='".$result[0][$i][2]."' data-intro='".$result[0][$i][4]."' data-type='".$arr[$result[0][$i][5]]."' data-hits='".$result[0][$i][6].
+                       "' data-songs='";
+                       for($p=0;$p<count($result[2][$result[0][$i][0]]);$p++){
+                        echo $result[2][$result[0][$i][0]][$p][0]."|";
+                        }
+                       echo "'>编辑</a>".
+                    "<a href='./?a=GedanDel&id=".$result[0][$i][0]."'>删除</a>
+                </td>
+                </tr>";
+
+
+                }
+                ?>
+
+                </tbody>
+            </table>
+        </center>
+    </div>
+</div>
+
+<!-- 编辑 -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>编辑</h2>
+        <form name="form_1" id="form_1" action=""  method="post" enctype="multipart/form-data">
+        <label >歌单名</label>
+        <input type="text" id="name" name="name">
+        <br>
+        <label>作者</label>
+        <input type="text" id="author" readonly ="readonly">
+            <br>
+        <label>简介</label>
+        <input type="text" id="intro" name="intro">
+            <br>
+        <label>类型</label>
+        <input type="text" id="type" readonly ="readonly">
+            <br>
+        <label>点击量</label>
+        <input type="text" id="hits" name="hits">
+            <br>
+        <label>歌曲列表</label><br>
+            <input type="text" id="song-search1" placeholder="Search songs">
+            <ul id="song-list1">
+        <?php
+            foreach($result[1] as $key => $value){
+        echo '<li style="display:none"><input type="checkbox" id="'.$value[1].'"  name="songs[]" value="'.$value[0].'">
+        <label for="'.$value[1].'">'.$value[1].'</label></li>';
+        }
+        ?>
+            </ul>
+        <input type="submit" name="submit" value="保存"></form>
+    </div>
+</div>
+
+<div id="addModal" class="modal_1">
+    <div class="modal-content1">
+        <span class="close_1">&times;</span>
+        <h2>添加</h2>
+        <form id="istForm" action="?a=GedanManageAdd" method="POST" enctype="multipart/form-data">
+            <p><span>歌单名称：</span><input type="text"  name="gedanname" required></p>
+            <p><span>歌单简介：</span><input type="text"  name="intro" required></p>
+            <p><span>歌单封面：</span><input type="file" id="file" name="upload_image"></p>
+
+            <h4>歌曲列表</h4>
+            <input type="text" id="song-search" placeholder="Search songs">
+            <ul id="song-list">
+            <?php
+
+        foreach($result[1] as $i => $res){
+            echo '
+            <li style="display:none">
+                <input type="checkbox" id="'.$res[1].'"  name="songs[]" value="'.$res[0].'">
+                <label for="'.$res[1].'">'.$res[1].'</label>
+            </li>';}
+
+            ?>
+            </ul>
+            <input type="submit" name="submit" value="提交">
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('song-search');
+        const songList = document.getElementById('song-list');
+        // 搜索功能
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const songs = songList.querySelectorAll('li');
+
+            songs.forEach(song => {
+                const songName = song.querySelector('input').getAttribute('id');
+
+                if(searchTerm !== ''){
+                    if(songName.includes(searchTerm)){
+
+                        song.style.display = '';
+                    }
+                }
+
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('song-search1');
+        const songList = document.getElementById('song-list1');
+        // 搜索功能
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const songs = songList.querySelectorAll('li');
+
+            songs.forEach(song => {
+                const songName = song.querySelector('input').getAttribute('id');
+
+
+                if(searchTerm !== ''){
+                    if(songName.includes(searchTerm)){
+
+                        song.style.display = '';
+                    }
+                }
+
+            });
+        });
+    });
+
+
+
+
+
+    // 获取模态框
+    var modal = document.getElementById("editModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span = document.getElementsByClassName("close")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.music-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+
+            document.getElementById('form_1').action ='./?a=GedanManageAc&id='+this.getAttribute('data-id');
+
+            var name = this.getAttribute('data-name');
+            var author = this.getAttribute('data-author');
+            var intro = this.getAttribute('data-intro');
+            var type = this.getAttribute('data-type');
+            var hits = this.getAttribute('data-hits')
+
+
+            document.getElementById('name').value = name;
+            document.getElementById('author').value = author;
+            document.getElementById('intro').value = intro;
+            document.getElementById('type').value =type;
+            document.getElementById('hits').value =hits;
+
+            var songs = this.getAttribute('data-songs').split('|');
+            var r = songs.filter(function (s) {
+                return s && s.trim();
+            });
+
+            for(i=0;i<r.length;i++){
+
+                document.getElementById(r[i]).checked="checked";
+                var a = document.getElementById(r[i]).parentNode;
+                a.style.display = "";
+
+
+
+            }
+            modal.style.display = "block";
+
+
+
+
+
+
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span.onclick = function() {
+        modal.style.display = "none";
+
+        var objNameList=document.getElementsByName('songs[]');
+        for(i=0;i<objNameList.length;i++) {
+            objNameList[i].checked ="";
+            var a = objNameList[i].parentNode;
+            a.style.display = "none";
+        }
+
+    }
+    // 点击模态框外部区域关闭模态框
+    window.onclick = function(event) {
+
+        if (event.target == modal) {
+            modal.style.display = "none";
+
+            var objNameList=document.getElementsByName('songs[]');
+            for(i=0;i<objNameList.length;i++) {
+                objNameList[i].checked ="";
+                var a = objNameList[i].parentNode;
+                a.style.display = "none";
+            }
+        }
+        if (event.target == modal_1) {
+            modal_1.style.display = "none";
+        }
+
+    }
+
+
+    // 获取模态框
+    var modal_1 = document.getElementById("addModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span_1 = document.getElementsByClassName("close_1")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.add-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+
+
+            modal_1.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span_1.onclick = function() {
+        modal_1.style.display = "none";
+    }
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

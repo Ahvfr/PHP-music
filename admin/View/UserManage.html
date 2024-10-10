@@ -1,0 +1,421 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>后台 - 用户管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <link href="static/css/admin1.css" type="text/css" rel="stylesheet" media="all">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #ddd; }
+        .user-info-header { font-size: 24px; margin: 20px 0; text-align: center; }
+        .actions a { color: #007bff; text-decoration: none; margin-right: 10px; }
+        .actions a:hover { text-decoration: underline; }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal_1 {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+        .modal-content1 {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close_1 {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .close_1:hover,
+        .close_1:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal input, .modal select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal_1 input, .modal_1 select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal_1 button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+        .modal_1 button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 头像上传区域样式 */
+        .avatar-upload {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .tx-upload {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            object-fit: cover;
+            cursor: pointer;  /* 让头像看起来像是可点击的 */
+        }
+        .tx-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            object-fit: cover;
+            cursor: pointer;  /* 让头像看起来像是可点击的 */
+        }
+        /* 隐藏默认文件输入框 */
+        #avatar {
+            display: none;
+        }
+        #tx {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="banner_top">
+    <div id="banner_top_l">
+    </div>
+    <div id="banner_top_r">
+        <a class="top_a" href="./?a=logoff">退出</a>
+    </div>
+</div>
+
+<div id="daohang">
+    <br><br>
+    <div>
+        <a href="./"><b>首页</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=SongManage"><b>歌曲管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=GedanManage"><b>歌单管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=CommManage"><b>评论管理</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=SongAudit"><b>歌曲审核</b></a>
+    </div>
+    <br>
+    <div>
+        <a href="./?a=UserManage"><b>用户管理</b></a>
+    </div>
+</div>
+
+<div id="neirong">
+    <div class="neirongkuang">
+        <center>
+            <h2 class="user-info-header">用户信息</h2><div style="float:right;"><a class='add-btn'>添加用户</a></div><br>
+            <table>
+                <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>电话</th>
+                    <th>邮箱</th>
+                    <th>类型</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+<?php
+                $arr=array(1=>"创作者",2=>"用户");
+                for($i=0;$i < count($result);$i++){
+
+                echo "  <tr>
+
+                    <td>".$result[$i][1]."</td>
+                    <td>".$result[$i][5]."</td>
+                    <td>".$result[$i][8]."</td>
+                    <td>".$arr[$result[$i][9]]."</td>
+                    <td class='actions'>
+                        <a  class='edit-btn' data-username='".$result[$i][1]."' data-phone='".$result[$i][5]."' data-email='".$result[$i][8]."' data-type='".$result[$i][9]."' data-txpath='".$result[$i][3]."'>编辑</a>
+                        <a href='./?a=UserDelete&which=".$result[$i][1]."'>删除</a>
+                    </td>
+                </tr>";
+
+
+                }
+?>
+
+                </tbody>
+            </table>
+        </center>
+    </div>
+</div>
+
+<!-- 编辑 -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>编辑用户信息</h2>
+        <form id="editForm" action="./?a=UserEdit" method="post" enctype="multipart/form-data">
+
+            <!-- 头像上传区域 -->
+            <div class="avatar-upload">
+                <img id="avatarPreview" src="path/to/default-avatar.jpg" alt="用户头像" class="avatar-preview">
+                <input type="file" id="avatar" name="tx" accept="image/*">
+            </div>
+
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" required readonly =“readonly”>
+
+            <label for="email">密码</label>
+            <input type="text" id="password" name="password" >
+
+            <label for="email">电话</label>
+            <input type="text" id="phone" name="phone" >
+
+            <label for="email">邮箱</label>
+            <input type="email" id="email" name="email" >
+
+            <label for="type">类型</label>
+            <select id="type" name="status" required>
+                <option value=2>用户</option>
+                <option value=1>创作者</option>
+            </select>
+
+
+
+            <button type="submit">保存修改</button>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- 添加 -->
+<div id="addModal" class="modal_1">
+    <div class="modal-content1">
+        <span class="close_1">&times;</span>
+        <h2>添加用户</h2>
+        <form id="addForm" action="./?a=UserAdd" method="post" enctype="multipart/form-data">
+            <!-- 头像上传区域 -->
+            <div class="tx-upload">
+                <img id="txPreview" src="path/to/default-avatar.jpg" alt="用户头像" class="tx-preview">
+                <input type="file" id="tx" name="tx" accept="image/*">
+            </div>
+
+            <label for="name">用户名</label>
+            <input type="text" id="name" name="username" required >
+
+            <label for="mail">密码</label>
+            <input type="text" id="pass" name="password" required>
+
+            <label for="mail">电话</label>
+            <input type="text" id="ph" name="phone" >
+
+            <label for="mail">邮箱</label>
+            <input type="email" id="mail" name="email" >
+
+            <label for="type_1">类型</label>
+            <select id="type_1" name="status" required>
+                <option value=2>用户</option>
+                <option value=1>创作者</option>
+            </select>
+
+            <button type="submit">保存修改</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    // 获取模态框
+    var modal = document.getElementById("editModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span = document.getElementsByClassName("close")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.edit-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var username = this.getAttribute('data-username');
+            var email = this.getAttribute('data-email');
+            var type = this.getAttribute('data-type');
+            var phone = this.getAttribute('data-phone');
+            var avatarPreview = this.getAttribute('data-txpath')
+
+            document.getElementById('username').value = username;
+            document.getElementById('email').value = email;
+            document.getElementById('type').value = type;
+            document.getElementById('phone').value = phone;
+            document.getElementById('avatarPreview').src = avatarPreview;
+
+
+            modal.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    // 点击模态框外部区域关闭模态框
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        if (event.target == modal_1) {
+            modal_1.style.display = "none";
+        }
+    }
+    // 头像预览功能
+    document.getElementById('avatar').addEventListener('change', function() {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatarPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    // 点击头像触发文件选择框
+    document.getElementById('avatarPreview').addEventListener('click', function() {
+        document.getElementById('avatar').click();
+    });
+
+
+
+
+
+    // 获取模态框
+    var modal_1 = document.getElementById("addModal");
+    // 获取 <span> 元素，用于关闭模态框
+    var span_1 = document.getElementsByClassName("close_1")[0];
+    // 当点击编按钮时打开模态框并填充表单
+    document.querySelectorAll('.add-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var username = "";
+            var email = "";
+            var type = "";
+            var phone = "";
+            var avatarPreview = "";
+
+            document.getElementById('name').value = username;
+            document.getElementById('mail').value = email;
+            document.getElementById('type_1').value = type;
+            document.getElementById('ph').value = phone;
+            document.getElementById('txPreview').src = avatarPreview;
+
+
+            modal_1.style.display = "block";
+        });
+    });
+
+    // 点击 <span> (x) 关闭模态框
+    span_1.onclick = function() {
+        modal_1.style.display = "none";
+    }
+
+    // 头像预览功能
+    document.getElementById('tx').addEventListener('change', function() {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('txPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    // 点击头像触发文件选择框
+    document.getElementById('txPreview').addEventListener('click', function() {
+        document.getElementById('tx').click();
+    });
+
+
+
+</script>
+
+
+
+</body>
+</html>
